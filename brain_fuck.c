@@ -35,6 +35,7 @@ main(int argc,char *argv[])
   int loop_top = 0;
   char * file_path = (argc >= 2) ? argv[1] : "script.bf";
   char * str;
+  int end = 0;
   //printf("%s\n",file_path);
   int str_length = ae_load_file_to_memory(file_path,&str);
   if (str_length < 0)
@@ -46,14 +47,14 @@ main(int argc,char *argv[])
   int i;
   for (i = 0; i < str_length; i++)
     {
-
+/*
       printf("%d %c %d %d %d\n",
 	     i,
 	     str[i],
 	     loop_top,
 	     mem_point - 512,
 	     memory[mem_point]);
-
+*/
       switch (str[i])
 	{
 	case '+':
@@ -72,7 +73,11 @@ main(int argc,char *argv[])
           if (memory[mem_point])
 	    loop_stack[loop_top++] = i - 1;
           else
-	    while (str[++i] != ']');
+	    while (str[++i] != ']' || end)
+	      if (str[i] == '[')
+		end++;
+              else if (str[i] == ']')
+		end--;
           break;
 	case ']':
           i = loop_stack[--loop_top];
